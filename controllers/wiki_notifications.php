@@ -24,10 +24,11 @@ class WikiNotifications {
 			if($wpw_options['email_admins'] == 1){
 		  
 				$emails = $this->getAllAdmins();
-				$subject = "Wiki Change";
 			
 				$pageTitle = $p->post_title;
 				$pagelink = get_permalink($pageID);
+
+				$subject = "Wiki Change: ".$pageTitle;
 				
 				$message = sprintf(__("A Wiki Page has been modified on %s."),get_option('home'),$pageTitle);
 				$message .= "\n\r";
