@@ -36,13 +36,13 @@ class WikiNotifications {
 				$pageTitle = $p->post_title;
 				$pagelink = get_permalink($pageID);
 
-				$subject = "Wiki Change: ".$pageTitle;
+				$subject = "[".get_bloginfo('title')."] Wiki Change: ".$pageTitle;
 				
-				$message = sprintf(__("A Wiki Page has been modified on %s."),get_option('home'),$pageTitle);
+				$message = '<p>'.sprintf(__("A Wiki Page has been modified on %s."),get_option('home'),$pageTitle).'</p>';
 				$message .= "\n\r";
-				$message .= sprintf(__("The page title is %s"), $pageTitle); 
+				$message .= '<p>'.sprintf(__("The page title is %s"), $pageTitle).'</p>'; 
 				$message .= "\n\r";
-				$message .= __('To visit this page, ').'<a href="'.$pagelink.'">'.__('click here').'</a>';
+				$message .= '<p>'.__('To visit this page, ').'<a href="'.$pagelink.'">'.__('click here').'</a></p>';
 				
 				$left_revision = reset($revisions);
 				$right_revision = $p;
