@@ -321,23 +321,39 @@ class WikiPageController {
 			$ajax_args .= ', wpw_revision_stack: "1"';
 			
 		
-		echo '
+		?>
 		<script type="text/javascript">
 			jQuery(document).ready(function($) {
 				
-				'.$nicedit.'
+				<?php print $nicedit; ?>
 					
 				$("#wpw_save").click(function( e ) {
 					e.preventDefault();
 					data = {
-						'.$ajax_args.'
+						<?php print $ajax_args; ?>
 					};
-					$.post("'.$wpw_ajax_url.'", data, function(results) {
-						$("#wpw_view_history_div").load(location.href+" #wpw_view_history_div>*", function() {
-							$("#wpw_read_div").load(location.href+" #wpw_read_div>*", function() {
-								alert(results);
+					$.post("<?php print $wpw_ajax_url; ?>", data, function(results) {
+						$("#wpw_view_history_div").load(
+							location.href+" #wpw_view_history_div>*",
+							function() {
+								$("#wpw_read_div").load(
+									location.href+" #wpw_read_div>*",
+									function() {
+										jQuery('.entry-content')
+										.prepend('<div class="alert-slider" style="display: none">'+results+'</div>');
+										jQuery('.alert-slider')
+										.slideDown('slow', function () {
+											// Switch tabs on save
+											jQuery('#wpw_read').click();
+										}).delay(1000).slideUp(
+												'slow',
+												function () {
+													jQuery(this).remove();
+												}
+											);
+										
+									});
 							});
-						});
 					});
 				});
 				
@@ -351,7 +367,7 @@ class WikiPageController {
 				});	
 			});
 		</script>
-		';
+		<?php
 	}
 	
 	function save_code($data,$postarr = Array()) {	
