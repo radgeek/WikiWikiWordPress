@@ -177,7 +177,7 @@ class WPW_WikiParser extends WikiParser {
 	
 	function parse_line($line) {
 		$line_regexes = array(
-			'preformat'=>'^\s(.*?)$',
+			//'preformat'=>'^\s(.*?)$',
 			'definitionlist'=>'^([\;\:])\s*(.*?)$',
 			'newline'=>'^$',
 			'list'=>'^([\*\#]+)(.*?)$',
@@ -185,20 +185,24 @@ class WPW_WikiParser extends WikiParser {
 			'horizontalrule'=>'^----$',
 		);
 		$char_regexes = array(
-//			'link'=>'(\[\[((.*?)\:)?(.*?)(\|(.*?))?\]\]([a-z]+)?)',
+			//'link'=>'(\[\[((.*?)\:)?(.*?)(\|(.*?))?\]\]([a-z]+)?)',
 			'internallink'=>'('.
 				'\[\['. // opening brackets
-					'(([^\]]*?)\:)?'. // namespace (if any)
-					'([^\]]*?)'. // target
-					'(\|([^\]]*?))?'. // title (if any)
+				'([^\]]+)' . // contents
 				'\]\]'. // closing brackets
 				'([a-z]+)?'. // any suffixes
 				')',
 			'externallink'=>'('.
-				'\['.
+				'(?<!\\\)\['.
 					'([^\]]*?)'.
 					'(\s+[^\]]*?)?'.
 				'\]'.
+				')',
+			'escapedlink'=>'('.
+				'(?=\\\).(\['.
+					'([^\]]*?)'.
+					'(\s+[^\]]*?)?'.
+				'\])'.
 				')',
 			'emphasize'=>'(\'{2,5})',
 			'eliminate'=>'(__TOC__|__NOTOC__|__NOEDITSECTION__)',
@@ -223,7 +227,8 @@ class WPW_WikiParser extends WikiParser {
 		if (!$this->stop_all) {
 			$this->stop = false;
 			foreach ($char_regexes as $func=>$regex) {
-				$line = preg_replace_callback("/$regex/i",array(&$this,"handle_".$func),$line);
+				// PHP Warning:  preg_replace_callback(): Requires argument 2, 'WPW_WikiParser::handle_0', to be a valid callback in /var/www/wordpress/wp-content/plugins/WikiWikiWordPress/lib/wpw_wikiparser.php on line 237, referer: http://feedwordpress.radgeek.com/wiki/how-do-i-make-the-links-within-a-syndicated-post-open-in-a-new-browser-window/comment-page-1/#comment-889149
+				$line = preg_replace_callback("/$regex/i",array($this,"handle_".$func),$line);
 				if ($this->stop) break;
 			}
 		}
