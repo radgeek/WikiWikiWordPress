@@ -506,7 +506,10 @@ class WikiPageController {
 				$post->post_status='publish'; //Set the status of the new post.
 				$post->post_title= 'New Wiki Page'; //The title of your post.
 				$post->post_type='page'; //Sometimes you might want to post a page.
-				$post->comment_status = 'open';
+				
+				// Fake posts can't be commented on.
+				$post->comment_status = 'closed';
+				
 				$post->post_date = date('Y-m-d H:i:s', time());
 			$wp_query->queried_object=$post;
 			$wp_query->post=$post;

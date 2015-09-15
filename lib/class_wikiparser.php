@@ -220,6 +220,7 @@ class WikiParser {
 	}
 	
 	function handle_externallink($matches) {
+		
 		$href = $matches[2];
 		$title = $matches[3];
 		if (!$title) {
