@@ -138,11 +138,8 @@ class WPW_WikiParser extends WikiParser {
 			return sprintf('<a href="%s" title="%s">%s</a>', esc_url($newhref), $namespace . ": " . $href, $title);
 		endif;
 
-		/*DBG*/ if (MyPHP::get('debug')) : var_dump($href); endif;
 		$href = $this->toWikiHref($href);
-		/*DBG*/ if (MyPHP::get('debug')) : var_dump($href); endif;
 		$slug = sanitize_title($href);
-		/*DBG*/ if (MyPHP::get('debug')) : var_dump($slug); endif;
 		
 		$wiki = $wpdb->get_var(
 			'SELECT `p`.`id` FROM `' . $wpdb->posts . '` `p`
