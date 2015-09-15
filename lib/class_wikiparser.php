@@ -335,7 +335,7 @@ class WikiParser {
 		$line = rtrim($line);
 				
 		foreach ($line_regexes as $func=>$regex) {
-			if (preg_match("/$regex/i",$line,$matches)) {
+			if (preg_match("\007${regex}\007ix",$line,$matches)) {
 				$called[$func] = true;
 				$func = "handle_".$func;
 				$line = $this->$func($matches);
