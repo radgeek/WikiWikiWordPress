@@ -309,14 +309,14 @@ class WikiParser {
 		$char_regexes = array(
 //			'link'=>'(\[\[((.*?)\:)?(.*?)(\|(.*?))?\]\]([a-z]+)?)',
 			'internallink'=>'('.
-				'\[\['. // opening brackets
+				'(?<!!)\[\['. // opening brackets
 					'(([^\]]*?)\:)?'. // namespace (if any)
 					'([^\]]*?)'. // target
 					'(\|([^\]]*?))?'. // title (if any)
 				'\]\]'. // closing brackets
 				'([a-z]+)?'. // any suffixes
 				')',
-			'externallink'=>'('.
+			'externallink'=>'(?<![CDATA)('.
 				'\['.
 					'([^\]]*?)'.
 					'(\s+[^\]]*?)?'.
