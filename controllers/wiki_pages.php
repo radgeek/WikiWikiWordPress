@@ -489,7 +489,14 @@ class WikiPageController {
 	  		$new_title = strip_tags($_GET['title']);
 			$new_page_nonce = wp_create_nonce('wpw_new_page_nonce');
 			$get_params = '?new_wiki_page=true&nonce='.$new_page_nonce.'&title='.$new_title;
-			$new_link = '<a href="'.get_bloginfo('url').'/wiki/new'.$get_params.'">Click here to create it.</a>';
+			
+			$create_new = get_bloginfo('url').'/wiki/new'.$get_params;
+			if (!$this->WikiHelper->is_restricted()) :
+				$new_link = '<a href="'.$create_new.'">Click 	here to create it.</a>';
+			else :
+				$new_link = '<a href="'.wp_login_url($create_new).'">'.__('Log in or register an account to edit.').'</a>';
+			endif;
+			
 			$id=-42; // need an id
 			$post = new stdClass();
 				$post->ID= $id;
