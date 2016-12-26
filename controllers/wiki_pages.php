@@ -288,13 +288,11 @@ class WikiPageController {
 			endif;
 			
 			$link .= $sep . 'wpw_action=edit';
-
-			if ('display' == $context) :
-				
-			endif;
+			
+			$link = esc_url($link, /*protocols=*/ null, $context);
 		endif;
 		
-		return esc_url($link, /*protocols=*/ null, $context);
+		return $link;
 	}
 	
 	function front_end_interface($content) {
@@ -402,6 +400,11 @@ class WikiPageController {
 				$(window).load(function() {
 					$(".wpw-hide-it").removeClass("wpw-hide-it");
 					$("#wpw_tabs").tabs();
+					
+					var act;
+					if (act = getParameterByName('wpw_action')) {
+						$('#wpw_' + act).click();
+					} /* if */
 				});	
 			});
 		</script>
