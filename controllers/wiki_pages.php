@@ -182,6 +182,7 @@ class WikiPageController {
 				add_filter('the_content',array($this, 'substitute_in_revision_content'),11);
 				add_filter('the_content',array($this,'front_end_interface'),12);
 				add_action('wp_footer',array($this,'inline_editor'));
+				add_filter('get_edit_post_link', [$this, 'wiki_edit_link'], 12);
 			} else {
 				add_filter('the_content',array($this,'wpw_nope') );
 			}
@@ -273,6 +274,29 @@ class WikiPageController {
 		endif;
 	}
 	
+	public function wiki_edit_link ($link, $post_id, $context) {
+		if ( ! $post = get_post($id) ) :
+			return $link;
+		endif;
+		
+		if ( 'wiki' == $post->post_type ) :
+			$link = get_permalink($post_id);
+			if (strpos($post_id, '?') === false) :
+				$sep = '?';
+			else :
+				$sep = '&';
+			endif;
+			
+			$link .= $sep . 'wpw_action=edit';
+
+			if ('display' == $context) :
+				
+			endif;
+		endif;
+		
+		return esc_url($link, /*protocols=*/ null, $context);
+	}
+	
 	function front_end_interface($content) {
 		global $post;
 		
@@ -299,13 +323,15 @@ class WikiPageController {
 			$return .= $this->get_section( $content, $wiki, $class );
 		
 		endforeach;
-			
+		
+		$sEditLink = $this->wiki_edit_link( '', $post->ID, 'display' );
+
 		return 
 			$update.'
 			<div id="wpw_tabs">
 			<ul id="wpw_tab_nav">
 				<li><a id="wpw_read" href="?wpw_action=content">Read</a></li>
-				<li><a id="wpw_edit" href="?wpw_action=edit">Edit</a></li>
+				<li><a id="wpw_edit" href="'.$sEditLink.'">Edit</a></li>
 				<li><a id="wpw_view_history" href="?wpw_action=history">View History</a></li>
 			</ul>
 			'.$warning
