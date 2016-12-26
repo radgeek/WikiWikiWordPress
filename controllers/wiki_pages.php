@@ -45,8 +45,17 @@ class WikiPageController {
 		}
 	}
 	
-	function table_of_contents($content) {
+	protected function _header_to_slug ($title) {
+		return trim(strip_tags($title));
+	}
 	
+	protected function _header_to_anchored ($m) {
+		$slug = $this->_header_to_slug($m[2]);
+		return '<a name="'.$slug.'"></a><' . $m[1] . '>' . $m[2] . '</' . $m[3] . '>';
+	}
+	
+	function table_of_contents($content) {
+
 		//This creates the Table of Contents
 	
 		global $wpdb,$post;
@@ -65,9 +74,9 @@ class WikiPageController {
 		}
 
 		preg_match_all("|<h2[^>]*>(.*)</h2>|", $content, $h2s, PREG_PATTERN_ORDER);
-		$content = preg_replace("|<h2[^>]*>(.*)</h2>|", "<a name='$1'></a><h2>$1</h2>", $content);
-		$content = preg_replace("|<h3[^>]*>(.*)</h3>|", "<a name='$1'></a><h3>$1</h3>", $content);
-		$h2s = array_map('strip_tags', $h2s[1]);
+		$content = preg_replace_callback("|<(h2[^>]*)>(.*)</(h2)>|", [$this, '_header_to_anchored'], $content);
+		$content = preg_replace_callback("|<(h3[^>]*)>(.*)</(h3)>|", [$this, '_header_to_anchored'], $content);
+		$h2s = $h2s[1];
 		$content = str_replace("\n", "::newline::", $content);
 		preg_match_all("|</h2.*>(.*)<h2>|U", $content, $h3s_contents, PREG_PATTERN_ORDER);
 		
@@ -88,10 +97,12 @@ class WikiPageController {
 			}
 		$table = "<ol class='content_list'>";
 		foreach($h2s as $key => $h2) {
-			$table .= "<li><a href='#$h2'>".($key+1)." ".$h2."</a></li>";
+			$slug = $this->_header_to_slug($h2);
+			$table .= "<li><a href='#${slug}'>".($key+1)." ".strip_tags($h2)."</a></li>";
 			if (!empty($h3s[$key][1])) {
 				foreach($h3s[$key][1] as $key1 => $h3) {
-					$table .= "<li class='lvl2'><a href='#$h3'>".($key+1).".".($key1+1)." ".$h3."</a></li>";
+					$slug = $this->_header_to_slug($h3);
+					$table .= "<li class='lvl2'><a href='#${slug}'>".($key+1).".".($key1+1)." ".strip_tags($h3)."</a></li>";
 				}
 			}
 		}
@@ -215,6 +226,7 @@ class WikiPageController {
 	
 	function get_content($content, $class = null ){
 		global $post;
+
 		return '<div id="wpw_read_div" '.$class.'>'.$this->table_of_contents( wptexturize( $this->wiki_parser($content) ) ).'</div>';	
 	}
 	

@@ -212,7 +212,7 @@ class WPW_WikiParser extends WikiParser {
 		$called = array();
 		
 		//$line = trim($line);
-				
+		
 		foreach ($line_regexes as $func=>$regex) {
 			if (preg_match("\007" . $regex ."\007ix",$line,$matches)) {
 				$called[$func] = true;
@@ -221,6 +221,7 @@ class WPW_WikiParser extends WikiParser {
 				if ($this->stop || $this->stop_all) break;
 			}
 		}
+		
 		if (!$this->stop_all) {
 			$this->stop = false;
 			foreach ($char_regexes as $func=>$regex) {
@@ -229,7 +230,7 @@ class WPW_WikiParser extends WikiParser {
 				if ($this->stop) break;
 			}
 		}
-		
+
 		$isline = strlen(trim($line))>0;
 		
 		// if this wasn't a list item, and we are in a list, close the list tag(s)

@@ -47,6 +47,7 @@ class WikiParser {
 		$content = $matches[2];
 		
 		$this->stop = true;
+				
 		// avoid accidental run-on emphasis
 		return $this->emphasize_off() . "\n\n<h{$level}>{$content}</h{$level}>\n\n";
 	}
@@ -359,7 +360,7 @@ class WikiParser {
 		
 		// suppress linebreaks for the next line if we just displayed one; otherwise re-enable them
 		if ($isline) $this->suppress_linebreaks = ($called['newline'] || $called['sections']);
-		
+
 		return $line;
 	}
 	
@@ -459,7 +460,6 @@ Done.
 		}
 
 		$output = preg_replace_callback('/<nowiki><\/nowiki>/i',array(&$this,"handle_restore_nowiki"),$output);
-
 
 		return $output;
 	}
