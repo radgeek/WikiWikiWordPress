@@ -64,10 +64,10 @@ class WikiPageController {
 			return $content;
 		}
 
-		preg_match_all("|<h2.*>(.*)</h2>|", $content, $h2s, PREG_PATTERN_ORDER);
-		$content = preg_replace("|<h2.*>(.*)</h2>|", "<a name='$1'></a><h2>$1</h2>", $content);
-		$content = preg_replace("|<h3.*>(.*)</h3>|", "<a name='$1'></a><h3>$1</h3>", $content);
-		$h2s = $h2s[1];
+		preg_match_all("|<h2[^>]*>(.*)</h2>|", $content, $h2s, PREG_PATTERN_ORDER);
+		$content = preg_replace("|<h2[^>]*>(.*)</h2>|", "<a name='$1'></a><h2>$1</h2>", $content);
+		$content = preg_replace("|<h3[^>]*>(.*)</h3>|", "<a name='$1'></a><h3>$1</h3>", $content);
+		$h2s = array_map('strip_tags', $h2s[1]);
 		$content = str_replace("\n", "::newline::", $content);
 		preg_match_all("|</h2.*>(.*)<h2>|U", $content, $h3s_contents, PREG_PATTERN_ORDER);
 		
